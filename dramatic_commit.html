@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAMATIC COMMITS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson: #8B0000;
+    --gold: #D4AF37;
+    --gold-light: #F5E6A3;
+    --cream: #FDF6E3;
+    --dark: #0D0D0D;
+    --shadow: rgba(212,175,55,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    font-family: 'Courier Prime', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Curtain effect */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    width: 80px;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+  }
+  body::before {
+    left: 0;
+    background: linear-gradient(to right, #3a0a0a, transparent);
+  }
+  body::after {
+    right: 0;
+    background: linear-gradient(to left, #3a0a0a, transparent);
+  }
+
+  .spotlight {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 700px;
+    background: radial-gradient(ellipse, rgba(212,175,55,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: flicker 4s ease-in-out infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    45% { opacity: 0.85; }
+    46% { opacity: 1; }
+    90% { opacity: 0.9; }
+    91% { opacity: 1; }
+  }
+
+  .stage {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 780px;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: curtainRise 1s ease-out forwards;
+  }
+
+  @keyframes curtainRise {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .masks {
+    font-size: 36px;
+    margin-bottom: 12px;
+    letter-spacing: 8px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 40px rgba(212,175,55,0.4), 0 2px 0 rgba(0,0,0,0.8);
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    color: rgba(212,175,55,0.5);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px auto;
+    width: fit-content;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+  .divider::after { background: linear-gradient(to left, transparent, var(--gold)); }
+  .divider span { color: var(--gold); font-size: 0.7rem; }
+
+  /* Input area */
+  .input-section {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 2px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .input-label {
+    color: rgba(212,175,55,0.6);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .boring-input {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(212,175,55,0.25);
+    border-radius: 2px;
+    color: var(--cream);
+    font-family: 'Courier Prime', monospace;
+    font-size: 1rem;
+    padding: 14px 16px;
+    outline: none;
+    resize: none;
+    transition: border-color 0.3s;
+    min-height: 60px;
+  }
+  .boring-input::placeholder { color: rgba(253,246,227,0.2); font-style: italic; }
+  .boring-input:focus { border-color: rgba(212,175,55,0.5); }
+
+  /* Mood selector */
+  .mood-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .mood-label {
+    color: rgba(212,175,55,0.6);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 16px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .mood-btn {
+    background: transparent;
+    border: 1px solid rgba(212,175,55,0.2);
+    color: rgba(212,175,55,0.5);
+    padding: 6px 14px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 1px;
+  }
+  .mood-btn:hover, .mood-btn.active {
+    background: rgba(212,175,55,0.1);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* Generate button */
+  .generate-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--crimson), #5a0000);
+    border: 1px solid rgba(212,175,55,0.4);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .generate-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(212,175,55,0.08));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .generate-btn:hover::before { opacity: 1; }
+  .generate-btn:hover {
+    box-shadow: 0 0 30px rgba(139,0,0,0.5), 0 0 60px rgba(212,175,55,0.1);
+    transform: translateY(-1px);
+  }
+  .generate-btn:active { transform: translateY(0); }
+  .generate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Output */
+  .output-section {
+    display: none;
+    animation: dramaDrop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  .output-section.visible { display: block; }
+
+  @keyframes dramaDrop {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .stage-card {
+    background: linear-gradient(160deg, #1a0a00, #0d0500);
+    border: 1px solid rgba(212,175,55,0.35);
+    border-radius: 2px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stage-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .stage-tag {
+    display: inline-block;
+    background: var(--crimson);
+    color: var(--gold-light);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    margin-bottom: 18px;
+  }
+
+  .dramatic-commit {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.05rem;
+    color: var(--cream);
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .dramatic-commit .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  /* Copy button */
+  .copy-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .copy-btn, .again-btn {
+    padding: 10px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 1px;
+  }
+  .copy-btn {
+    background: rgba(212,175,55,0.1);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+  }
+  .copy-btn:hover { background: rgba(212,175,55,0.2); }
+  .again-btn {
+    background: transparent;
+    border: 1px solid rgba(212,175,55,0.25);
+    color: rgba(212,175,55,0.5);
+  }
+  .again-btn:hover { border-color: rgba(212,175,55,0.5); color: rgba(212,175,55,0.8); }
+
+  /* Loading */
+  .loading-overlay {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    color: var(--gold);
+  }
+  .loading-overlay.visible { display: block; }
+  .curtain-loader {
+    font-size: 2rem;
+    animation: sway 0.8s ease-in-out infinite alternate;
+    display: inline-block;
+  }
+  @keyframes sway {
+    from { transform: rotate(-10deg); }
+    to { transform: rotate(10deg); }
+  }
+  .loading-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: rgba(212,175,55,0.6);
+    margin-top: 12px;
+    font-size: 0.9rem;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* History */
+  .history-section {
+    margin-top: 40px;
+    border-top: 1px solid rgba(212,175,55,0.1);
+    padding-top: 24px;
+  }
+  .history-title {
+    color: rgba(212,175,55,0.4);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .history-item {
+    background: rgba(255,255,255,0.015);
+    border: 1px solid rgba(212,175,55,0.08);
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-radius: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .history-item:hover { border-color: rgba(212,175,55,0.2); background: rgba(255,255,255,0.03); }
+  .history-boring { color: rgba(253,246,227,0.3); font-size: 0.75rem; margin-bottom: 4px; }
+  .history-dramatic { color: rgba(212,175,55,0.7); font-size: 0.8rem; line-height: 1.4; }
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--gold);
+    color: var(--dark);
+    padding: 10px 24px;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    border-radius: 1px;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 100;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .error-msg {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    font-style: italic;
+    margin-top: 10px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="spotlight"></div>
+
+<div class="stage">
+  <div class="header">
+    <div class="masks">🎭</div>
+    <h1>Dramatic Commits</h1>
+    <div class="divider"><span>✦</span></div>
+    <p class="subtitle">Transform your boring git commits into Shakespearean tragedy</p>
+  </div>
+
+  <div class="input-section">
+    <label class="input-label">Your Boring Commit</label>
+    <textarea class="boring-input" id="boringInput" placeholder="e.g. fixed button, updated css, idk what i changed..." rows="2"></textarea>
+
+    <span class="mood-label">Dramatic Mood</span>
+    <div class="mood-row" id="moodRow">
+      <button class="mood-btn active" data-mood="Shakespearean tragedy">🎭 Tragedy</button>
+      <button class="mood-btn" data-mood="existential crisis">🌑 Existential</button>
+      <button class="mood-btn" data-mood="over-the-top romance novel">💔 Romance</button>
+      <button class="mood-btn" data-mood="action movie one-liner energy">💥 Action Hero</button>
+      <button class="mood-btn" data-mood="passive aggressive coworker">😤 Passive Agressive</button>
+      <button class="mood-btn" data-mood="dramatic villain monologue">🦹 Villain</button>
+    </div>
+
+    <button class="generate-btn" id="generateBtn" onclick="generateCommit()">
+      ✦ Dramatize This Commit ✦
+    </button>
+    <p class="error-msg" id="errorMsg"></p>
+  </div>
+
+  <div class="loading-overlay" id="loading">
+    <span class="curtain-loader">🎭</span>
+    <p class="loading-text">The muse is weeping... your commit is becoming art...</p>
+  </div>
+
+  <div class="output-section" id="output">
+    <div class="stage-card">
+      <div class="stage-tag">⭐ Act I — Your Commit, Reborn</div>
+      <div class="dramatic-commit" id="dramaticText"></div>
+      <div class="copy-row">
+        <button class="copy-btn" onclick="copyCommit()">📋 Copy to Clipboard</button>
+        <button class="again-btn" onclick="generateCommit()">🎲 Different Interpretation</button>
+      </div>
+    </div>
+
+    <div class="history-section" id="historySection" style="display:none">
+      <p class="history-title">⟣ Previous Performances</p>
+      <div id="historyList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard! Now go commit in style 🎭</div>
+
+<script>
+  let selectedMood = 'Shakespearean tragedy';
+  let history = [];
+
+  // Mood selector
+  document.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedMood = btn.dataset.mood;
+    });
+  });
+
+  // Enter key to submit
+  document.getElementById('boringInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateCommit(); }
+  });
+
+  async function generateCommit() {
+    const boring = document.getElementById('boringInput').value.trim();
+    if (!boring) {
+      document.getElementById('boringInput').focus();
+      document.getElementById('boringInput').placeholder = "...please, give me SOMETHING to work with 🎭";
+      return;
+    }
+
+    const btn = document.getElementById('generateBtn');
+    const loading = document.getElementById('loading');
+    const output = document.getElementById('output');
+    const errorMsg = document.getElementById('errorMsg');
+
+    btn.disabled = true;
+    output.classList.remove('visible');
+    errorMsg.style.display = 'none';
+    loading.classList.add('visible');
+
+    const loadingLines = [
+      "The muse is weeping... your commit is becoming art...",
+      "Channeling the ghost of commits past...",
+      "Translating your mediocrity into magnificence...",
+      "Summoning the drama from within the diff...",
+    ];
+    let li = 0;
+    const loadInterval = setInterval(() => {
+      li = (li + 1) % loadingLines.length;
+      document.querySelector('.loading-text').textContent = loadingLines[li];
+    }, 1800);
+
+    try {
+    //   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const response = await fetch('/api/proxy', {
+        method: 'POST',
+        // headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          max_tokens: 1000,
+          messages: [
+            { role: 'system', content: 'You are a DRAMATIC GIT COMMIT MESSAGE GENERATOR. Write ONLY the raw commit message, zero meta-commentary.' },
+            { role: 'user', content: `Transform this boring commit into ${selectedMood} style.\n\nBoring commit: "${boring}"\n\nRules:\n-  Add Indian meme humor\n- might include some popular trending memes\n- Start with a SHORT dramatic commit title (one line, max 42 chars, ALL CAPS or Titlecase)\n- Then a blank line\n- Then 3-4 lines of ABSURDLY DRAMATIC body text\n- Make it hilarious and over-the-top while still technically describing the commit\n- End with something poetic or ominous on its own line\n- NO explanations, NO "here is your commit", just the raw commit message` }
+          ]
+        })
+      });
+
+      const data = await response.json();
+      clearInterval(loadInterval);
+
+      if (!response.ok) throw new Error(data.error?.message || 'API error');
+
+      const text = data.choices?.[0]?.message?.content?.trim();
+      if (!text) throw new Error('No response received');
+
+      // Parse the commit: first line is headline, rest is body
+      const lines = text.split('\n');
+      const headline = lines[0];
+      const body = lines.slice(1).join('\n').trim();
+
+      const dramaticDiv = document.getElementById('dramaticText');
+      dramaticDiv.innerHTML = `<span class="headline">${escapeHtml(headline)}</span>${escapeHtml(body)}`;
+
+      // Save to history
+      history.unshift({ boring, dramatic: text, mood: selectedMood });
+      if (history.length > 5) history.pop();
+      renderHistory();
+
+      loading.classList.remove('visible');
+      output.classList.add('visible');
+      // Re-trigger animation
+      output.style.animation = 'none';
+      void output.offsetWidth;
+      output.style.animation = '';
+
+    } catch (err) {
+      clearInterval(loadInterval);
+      loading.classList.remove('visible');
+      errorMsg.textContent = '⚠ The drama could not be summoned: ' + err.message;
+      errorMsg.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function renderHistory() {
+    const section = document.getElementById('historySection');
+    const list = document.getElementById('historyList');
+    if (history.length <= 1) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    list.innerHTML = history.slice(1).map((h, i) => `
+      <div class="history-item" onclick="restoreHistory(${i + 1})">
+        <div class="history-boring">git commit: "${escapeHtml(h.boring)}"</div>
+        <div class="history-dramatic">${escapeHtml(h.dramatic.split('\n')[0])}</div>
+      </div>
+    `).join('');
+  }
+
+  function restoreHistory(idx) {
+    const h = history[idx];
+    document.getElementById('dramaticText').innerHTML = `<span class="headline">${escapeHtml(h.dramatic.split('\n')[0])}</span>${escapeHtml(h.dramatic.split('\n').slice(1).join('\n').trim())}`;
+    document.getElementById('output').classList.add('visible');
+  }
+
+  function copyCommit() {
+    const text = document.getElementById('dramaticText').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    });
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>
