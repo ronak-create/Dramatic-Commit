@@ -1,8 +1,23 @@
 {
-  "name": "dramatic-commits",
+  "name": "dumb",
   "version": "1.0.0",
-  "private": true,
+  "description": "",
+  "homepage": "https://github.com/ronak-create/Dramatic-Commit#readme",
+  "bugs": {
+    "url": "https://github.com/ronak-create/Dramatic-Commit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ronak-create/Dramatic-Commit.git"
+  },
   "engines": {
-    "node": "18.x"
+    "node": ">=24.0.0"
+  },
+  "license": "ISC",
+  "author": "ronak-create",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
